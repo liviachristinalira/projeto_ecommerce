@@ -1,0 +1,8 @@
+{% extends 'base.html' %} {% block body %} {%load static%}
+
+<h3>minha conta</h3>
+
+<a href="{% url 'fazer_logout' %}">Sair da Conta</a>
+<a href="{% url 'meus_pedidos' %}">Meus Pedidos</a>
+
+{% endblock %}
