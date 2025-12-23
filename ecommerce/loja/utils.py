@@ -28,8 +28,8 @@ def ordenar_produtos(produtos, ordem):
     elif ordem == "mais-vendidos":
         lista_produtos= []
         for produto in produtos:
-            lista_produtos.append((produto.total_vendas(), produto.id, produto))
-  
-        lista_produtos = sorted(lista_produtos, reverse=True)
-        produtos = [item[2] for item in lista_produtos]
+            lista_produtos.append((produto.total_vendas(), produto))
+        lista_produtos = sorted(lista_produtos, reverse=True, key=lambda tupla: tupla[0])
+        produtos = [item[1] for item in lista_produtos]
+
     return produtos

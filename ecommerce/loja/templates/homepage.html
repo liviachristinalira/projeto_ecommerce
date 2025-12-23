@@ -1,12 +1,25 @@
-{% extends 'base.html' %} {% block body %} {%load static%}
+{% extends 'base.html' %}
+{% load static %}
 
-<h3>homepage</h3>
-{% for banner in banners %}
+{% block body %}
 
-<a href = "{% url 'loja' %}{{banner.link_destino}}"> 
-<img src = "{{banner.imagem.url}}"">
-</a> 
-{% endfor %}
 
+<main class="principal">
+
+    <section class="banner-grid">
+    {% for banner in banners %}
+      <a
+        href="{% url 'loja' %}{{ banner.link_destino }}"
+        class="banner-grid__imagem"
+      >
+        <img
+          src="{{ banner.imagem.url }}"
+          alt="{{ banner.link_destino }}"
+        />
+      </a>
+    {% endfor %}
+    </section>
+
+  </main>
 
 {% endblock %}

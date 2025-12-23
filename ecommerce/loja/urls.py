@@ -10,6 +10,7 @@ urlpatterns = [
     path('produto/<int:id_produto>/<int:id_cor>/', ver_produto, name="ver_produto"),
     path('carrinho/', carrinho, name="carrinho"),
     path('checkout/', checkout, name="checkout"),
+    path('finalizar-pedido/', finalizar_pedido, name="finalizar_pedido"),
     path('adicionar-carrinho/<int:id_produto>/', adicionar_carrinho, name="adicionar_carrinho"),
     path('remover-carrinho/<int:id_produto>/', remover_carrinho, name="remover_carrinho"),
     path('adicionar-endereco/', adicionar_endereco, name="adicionar_endereco"),

@@ -1,51 +1,139 @@
-{% extends 'base.html' %} {% block body %} {%load static%}
+{% extends 'base.html' %}
+{% load static %}
 
-<h3>loja</h3>
+{% block body %}
 
-{% if tem_estoque %}
+<main class="principal principal--padding-b principal--gap">
+    <section class="s-produto">
+      <div class="s-produto__carrossel">
+        <div class="s-produto__carrossel-itens">
+          <div class="s-produto__carrossel-img">
+            <img
+              src="{{ produto.imagem.url }}"
+              alt="Imagem Carrossel 1"
+            />
+          </div>
+          <div class="s-produto__carrossel-img" style="overflow: hidden;">
+            <img
+              src="{{ produto.imagem.url }}"
+              alt="Imagem Carrossel 2"
+              style="transform: scale(1.6);"
+            />
+          </div>
+        </div>
 
-<img src = "{{produto.imagem.url}}" width = "300" height = "400">
-<p>Produto: {{ produto.nome }} </p>
-<p>Preco: {{ produto.preco }} </p> 
+        <div class="s-produto__carrossel-botoes">
+          <div
+            class="s-produto__carrossel-botao s-produto__carrossel-botao--selecionado"
+          ></div>
+          <div class="s-produto__carrossel-botao"></div>
+          <div class="s-produto__carrossel-botao"></div>
+          <div class="s-produto__carrossel-botao"></div>
+          <div class="s-produto__carrossel-botao"></div>
+        </div>
+      </div>
 
-{% if cor_selecionada%}
+      <div class="s-produto__informacoes">
+        <div class="s-produto__breadcrumbs">
+          <span><a href="{% url 'loja' %}">Loja</a></span>
+          <span><a href="{% url 'loja' %}{{ produto.categoria.slug }}">{{ produto.categoria.nome }}</a></span>
+          <span><a href="{% url 'loja' %}{{ produto.categoria.slug }}-{{ produto.tipo.slug }}">{{ produto.tipo.nome }}</a></span>
+          <span>
+            <p>{{ produto.nome }}</p>
+          </span>
+        </div>
 
-Cor: {{ cor_selecionada.nome }}
+        <div class="s-produto__infos">
+          <h1 class="s-produto__titulo">{{ produto.nome }}</h1>
 
-{% endif %}
+          <p class="s-produto__preco">R$ {{ produto.preco }}</p>
 
-{% for cor in cores %}
+          <div class="s-produto__cor">
+            <p class="s-produto__cor-nome">Cor: <span>{{ cor_selecionada.nome }}</span></p>
+            <div class="s-produto__cores">
+                {% for cor in cores %}
+              <a
+                href="{% url 'ver_produto' produto.id cor.id %}"
+                class="s-produto__cores-item"
+                style="background-color: {{ cor.codigo }}"
+              ></a>
+            {% endfor %}
+            </div>
+          </div>
 
-<a href= "{% url 'ver_produto' produto.id cor.id %}" > 
-    <i class="fa-solid fa-circle" style="color: {{cor.codigo}}";></i> 
-</a>
+          {% if tem_estoque %}
+            {% if tamanhos %}
+            <form method="POST" action="{% url 'adicionar_carrinho' produto.id %}">
+                {% csrf_token %}
+                <div class="s-produto__tamanho">
+                    <div class="s-produto__tamanhos">
+                        {% for tamanho in tamanhos %}
+                        <div class="menu__tamanho">
+                            <div class="s-produto__tamanhos-item">{{ tamanho }}</div>
+                            <input class="menu__checkbox" type="radio" name="tamanho" value="{{ tamanho }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <input type="hidden" name="cor" value="{{ cor_selecionada.id }}">
+                <button type="submit" class="s-produto__adicicionar">Adicionar à sacola</button>
+            </form>
+            {% endif %}
+          {% else %}
+            <h3>Item fora de estoque</h3>
+          {% endif %}
+        </div>
 
-{% endfor %}
-
-{% if tamanhos %}
-
-    <form method="POST" action=" {% url 'adicionar_carrinho' produto.id%}"> 
-        {% csrf_token %}
-        <p> Selecione o tamanho: </p>
-
-        {% for tamanho in tamanhos %}
-
-        <input type="radio" name="tamanho" value="{{ tamanho }}"> 
-        <label for="{{tamanho}}">{{ tamanho }}</label>
-
-        {% endfor %}
         
-        <input type= "hidden" name="cor" value="{{cor_selecionada.id}}">
-         
-        <button type="submit"> Adicionar ao Carrinho </button> 
-    </form> 
-{% endif %}
 
+        <div class="s-produto__descricao">
+          <p class="s-produto__descricao-titulo">Descrição do produto</p>
+          <div class="s-produto__descricao-textos">
+            <p>
+              {{ produto.nome }}
+            </p>
+            <p>
+              COMPOSIÇÃO <br />
+              100% algodão
+            </p>
+            <p>
+              CÓDIGO DO PRODUTO <br />
+              Ref: <span>{{ produto.id }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-{% else %}
+    {% if similares %}
+    <section class="similares">
+      <h2 class="similares__titulo">
+        Gostou desse produto? Veja itens similares
+      </h2>
 
-<p> produto fora de estoque <p>
-
-{% endif %}
+      <div class="similares__container">
+        {% for similar in similares %}
+        <a
+          href="{% url 'ver_produto' similar.id %}"
+          class="produto"
+        >
+          <div class="produto__imagem">
+            <img
+              src="{{ similar.imagem.url }}"
+              alt="Imagem do Produto"
+            />
+          </div>
+          <div class="produto__textos">
+            <p class="produto__titulo">{{ similar.nome }}</p>
+            <div class="produto__preco">
+              <p class="produto__avista">R$ {{ similar.preco }}</p>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  </main>
 
 {% endblock %}

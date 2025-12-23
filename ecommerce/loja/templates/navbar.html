@@ -1,31 +1,97 @@
-
 {% load static %}
+<header class="cabecalho">
 
-<nav>
-  <a href="{% url 'homepage' %}">Reserva</a>
-  <a href="{% url 'loja' %}">Loja</a>
-  <div style="display: flex;"> 
-    {% for categoria in categorias_navegacao%}
-    <div>
-        <a href="{% url 'loja' %}{{ categoria.slug }}">{{categoria.nome}}:</a>
-        <br>
-        {% for tipo in tipos_navegacao%}
-          <a href="{% url 'loja' %}{{ categoria.slug }}-{{ tipo.slug }}">{{tipo.nome}}</a>
-        {%endfor%}
-    </div>
-    {%endfor%}
+  <div class="cabecalho__container">
+    <a href="{% url 'homepage' %}" class="cabecalho__logo-texto">
+      Reserva
+    </a>
+
+    <nav class="cabecalho__navegacao">
+      <ul class="cabecalho__lista">
+        {% for categoria in categorias_navegacao %}
+        <li class="cabecalho__item-lista">
+          <a
+            class="cabecalho__link"
+            href="{% url 'loja' %}{{ categoria.slug }}"
+          >
+            {{ categoria.nome }}
+          </a>
+
+          <div class="cabecalho__expansao-tipos">
+            <ul class="cabecalho__lista cabecalho__lista--tipo">
+              {% for tipo in tipos_navegacao %}
+              <li>
+                <a
+                  class="cabecalho__link cabecalho__link--tipo"
+                  href="{% url 'loja' %}{{ categoria.slug }}-{{ tipo.slug }}"
+                >
+                  {{ tipo.nome }}
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </nav>
   </div>
 
-  {% if request.user.is_authenticated%}
-    <a href="{% url 'minha_conta' %}">Minha Conta</a>
-  {% else %}
-    <a href="{% url 'fazer_login' %}">Login</a>
-  {%endif%}
+  <div class="cabecalho__icones">
+    <div class="cabecalho__icone-login">
+      {% if request.user.is_authenticated %}
+      <a class="cabecalho__link-icone cabecalho__link-icone--logado" href="javascript:void(0)">
+      {% else %}
+      <a class="cabecalho__link-icone" href="{% url 'fazer_login' %}">
+      {% endif %}
 
-  <a href="{% url 'carrinho' %}">Carrinho</a>
+        <!-- SVG LOGIN -->
+        <svg class="cabecalho__icone" xmlns="http://www.w3.org/2000/svg">
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M8 1.333a3.332 3.332 0 100 6.662 3.332 3.332 0 100-6.662zM3.334 4.664A4.665 4.665 0 018 0a4.665 4.665 0 110 9.328 4.665 4.665 0 01-4.666-4.664zm2 8.662A3.333 3.333 0 002 16.657v1.996h12v-1.996a3.333 3.333 0 00-3.333-3.333H5.334zM.667 16.657a4.666 4.666 0 014.667-4.666h5.333a4.666 4.666 0 014.667 4.666v3.33H.667v-3.33z"
+            fill="inherit"
+          />
+        </svg>
+      </a>
 
-  <img src="{% static 'images/carrinho.png' %}" width=30 height=30>
-  {{quantidade_produtos_carrinho}}
+      <div class="cabecalho__informacoes-perfil">
+        <p class="cabecalho__texto">
+          Olá, <span>{{ request.user.cliente.nome }}</span>!
+        </p>
+        <a class="cabecalho__link cabecalho__link--perfil" href="{% url 'minha_conta' %}">
+          Minha Conta
+        </a>
+        <a class="cabecalho__link cabecalho__link--perfil" href="{% url 'meus_pedidos' %}">
+          Meus Pedidos
+        </a>
+        {% if equipe %}
+        <a class="cabecalho__link cabecalho__link--perfil" href="{% url 'gerenciar_loja' %}">
+          Gerenciar Loja
+        </a>
+        {% endif %}
+        <hr />
+        <a class="cabecalho__link cabecalho__link--perfil" href="{% url 'fazer_logout' %}">
+          Sair
+        </a>
+      </div>
+    </div>
 
- 
-</nav>
+    <div class="cabecalho__icone-carrinho">
+      <a class="cabecalho__link-icone" href="{% url 'carrinho' %}">
+        <!-- SVG CARRINHO -->
+        <svg class="cabecalho__icone cabecalho__icone--menor" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M15.328 5.484a.656.656 0 00-.672-.613h-2.219v-.613C12.437 1.903 10.454 0 8 0S3.563 1.903 3.563 4.258v.613H1.378a.656.656 0 00-.672.613L0 19.323c0 .16.067.322.168.451A.615.615 0 00.672 20h14.656c.37 0 .672-.29.672-.645l-.672-13.871z"
+            fill="inherit"
+          />
+        </svg>
+      </a>
+      <div class="cabecalho__itens cabecalho__itens--visivel">
+        {{ quantidade_produtos_carrinho }}
+      </div>
+    </div>
+  </div>
+</header>
+
